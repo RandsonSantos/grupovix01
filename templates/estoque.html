@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}Estoque{% endblock %}
+{% block content %}
+
+<h2 class="text-center mt-4">📦 Controle de Estoque</h2>
+<div class="container">
+
+    <!-- Formulário para adicionar novo produto -->
+    <div class="card p-4 mb-4 shadow">
+        <h4 class="text-primary">Adicionar Novo Produto</h4>
+        <form action="{{ url_for('adicionar_produto') }}" method="POST" class="d-flex" onsubmit="setTimeout(() => { location.reload(); }, 700);">
+            <input type="text" name="nome" class="form-control me-2" placeholder="Nome do produto" required>
+            <input type="number" name="preco" class="form-control me-2" min="0" step="0.01" placeholder="Preço" required>
+            <input type="number" name="estoque" class="form-control me-2" min="1" placeholder="Quantidade" required>
+            <button type="submit" class="btn btn-primary">Adicionar Produto</button>
+        </form>
+    </div>
+
+    <!-- Tabela de estoque -->
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Nome</th>
+                <th>Preço</th>
+                <th>Quantidade</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for produto in produtos %}
+            <tr>
+                <td>{{ produto.nome }}</td>
+                <td>R$ {{ produto.preco }}</td>
+                <td>{{ produto.estoque }}</td>
+                <td class="d-flex align-items-center">
+                    <!-- Botão "Ver Produto" -->
+                    <a href="{{ url_for('ver_produto', id=produto.id) }}" class="btn btn-info me-2">Ver Produto</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}

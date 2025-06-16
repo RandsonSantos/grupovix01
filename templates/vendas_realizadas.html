@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}Vendas Realizadas{% endblock %}
+{% block content %}
+
+<!-- 📜 Cabeçalho -->
+<h2 class="text-center mt-4">📜 Vendas Finalizadas</h2>
+
+
+    <div class="alert alert-info text-center">
+        <h4>📊 Resumo das Vendas do Dia</h4>
+        <h5>✅ Vendas Finalizadas</h5>
+        <p><strong>Total:</strong> {{ total_finalizadas }}</p>
+        <p><strong>Faturamento:</strong> R$ {{ "%.2f"|format(faturamento_finalizadas or 0) }}</p>
+    </div>
+
+    <div class="alert alert-danger text-center">
+        <h5>❌ Vendas Canceladas</h5>
+        <p><strong>Total:</strong> {{ total_canceladas }}</p>
+        <p><strong>Valor Cancelado:</strong> R$ {{ "%.2f"|format(faturamento_canceladas or 0) }}</p>
+    </div>
+</div>
+
+<!-- 🔗 Importação de Scripts -->
+<script src="{{ url_for('static', filename='script.js') }}" defer></script>
+
+{% endblock %}
+<!-- 📢 Resumo Financeiro do Dia -->
+<div class="container mt-4">
+    <div class="alert alert-success text-center">
+        <h4>📊 Resumo das Vendas do Dia</h4>
+        <p><strong>Total de Pedidos:</strong> {{ total_pedidos }}</p>
+        <p><strong>Faturamento Total:</strong> R$ {{ "%.2f"|format(faturamento_total or 0) }}</p>
+    </div>

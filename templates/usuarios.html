@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="text-center">👥 Lista de Usuários</h2>
+    <hr>
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nome de Usuário</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for usuario in usuarios %}
+            <tr>
+                <td>{{ usuario.id }}</td>
+                <td>{{ usuario.username }}</td>
+                <td>
+                    <a href="{{ url_for('editar_usuario', id=usuario.id) }}" class="btn btn-warning btn-sm">✏️ Editar</a>
+                    <form action="{{ url_for('excluir_usuario', id=usuario.id) }}" method="POST" style="display:inline;">
+                        <button type="submit" class="btn btn-danger btn-sm">🗑️ Excluir</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <hr>
+    <div class="text-center">
+        <a href="{{ url_for('registrar') }}" class="btn btn-success">📌 Criar uma conta</a>
+    </div>
+</div>
+{% endblock %}
