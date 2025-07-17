@@ -10,7 +10,7 @@ import os
 app = Flask(__name__)
 
 # 🔧 Configuração geral
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://db_grupovixloja1_user:lZAJz61gp1qBngzMzQO5WVOsUjQzNenA@dpg-d1so45fdiees738h258g-a.oregon-postgres.render.com/db_grupovixloja1'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://db_grupovixloja1_user:lZAJz61gp1qBngzMzQO5WVOsUjQzNenA@dpg-d1so45fdiees738h258g-a/db_grupovixloja1'
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config["SECRET_KEY"] = "sua_chave_super_secreta"
 app.config["PERMANENT_SESSION_LIFETIME"] = timedelta(minutes=5)
