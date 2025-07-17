@@ -1,11 +1,11 @@
 {% extends "base.html" %}
 
-{% block title %}Login - Grupo Vix{% endblock %}
+{% block title %}Cadastrar Usuário - Grupo Vix{% endblock %}
 
 {% block content %}
 <div class="row justify-content-center">
-    <div class="col-md-4">
-        <h3 class="text-center mb-4">Acesso ao Sistema</h3>
+    <div class="col-md-6">
+        <h4 class="text-center mb-4">Cadastrar Novo Usuário</h4>
 
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
@@ -18,7 +18,11 @@
             {% endif %}
         {% endwith %}
 
-        <form method="POST" action="{{ url_for('login') }}">
+        <form method="POST" action="{{ url_for('cadastrar_usuario') }}">
+            <div class="mb-3">
+                <label for="nome" class="form-label">Nome:</label>
+                <input type="text" name="nome" class="form-control" required>
+            </div>
             <div class="mb-3">
                 <label for="email" class="form-label">E-mail:</label>
                 <input type="email" name="email" class="form-control" required>
@@ -27,7 +31,14 @@
                 <label for="senha" class="form-label">Senha:</label>
                 <input type="password" name="senha" class="form-control" required>
             </div>
-            <button type="submit" class="btn btn-primary w-100">Entrar</button>
+            <div class="mb-3">
+                <label for="tipo" class="form-label">Tipo de Usuário:</label>
+                <select name="tipo" class="form-select" required>
+                    <option value="atendimento">Atendimento</option>
+                    <option value="admin">Administrador</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-success w-100">Cadastrar</button>
         </form>
     </div>
 </div>

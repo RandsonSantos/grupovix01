@@ -2,7 +2,7 @@
 
 {% block content %}
 <body>
-    <h2>Digite a Senha para Acessar o Estoque</h2>
+    <h2>Digite a Senha para Acessar </h2>
     <form action="{{ url_for('verificar_senha') }}" method="POST">
         <input type="password" name="senha_master" required>
         <button type="submit">Entrar</button>

@@ -40,6 +40,7 @@
     <table class="table table-bordered table-responsive-md">
         <thead class="table-dark">
             <tr>
+                <th>Data</th>
                 <th>Saldo Inicial</th>
                 <th>Saldo Final</th>
                 <th>Status</th>
@@ -48,6 +49,7 @@
         <tbody>
             {% for caixa in caixas %}
             <tr>
+                <td>{{ caixa.data_abertura.strftime('%d/%m/%Y') }}</td>
                 <td>R$ {{ "%.2f"|format(caixa.saldo_inicial or 0) }}</td>
                 <td>R$ {{ "%.2f"|format(caixa.saldo_final or 0) }}</td>
                 <td>
@@ -60,8 +62,9 @@
             </tr>
             {% endfor %}
         </tbody>
-    </table>
+            </table>
     </div>
+
 <script>
     setInterval(() => {
         location.reload();
@@ -70,5 +73,17 @@
 
 <!-- 🔗 Importação de Scripts -->
 <script src="{{ url_for('static', filename='script.js') }}" defer></script>
+<form method="POST" action="{{ url_for('home') }}" onsubmit="return confirmarExclusao();">
+    <input type="password" name="senha_master" class="form-control mb-2" placeholder="🔐 Digite a senha master" required>
+    <button type="submit" class="btn btn-danger">
+        🗑️ Excluir Todos os Caixas
+    </button>
+</form>
 
+<script>
+    function confirmarExclusao() {
+        return confirm("⚠️ Tem certeza que deseja excluir TODOS os registros de caixa?");
+    }
+    </script>
+    
 {% endblock %}

@@ -1,61 +1,84 @@
 {% extends "base.html" %}
+{% block title %}Painel Administrativo - Grupo Vix{% endblock %}
 
 {% block content %}
 <div class="container mt-4">
-    <h2 class="text-center">🔑 Painel Administrativo</h2>
+    <h2 class="text-center mb-3">🔑 Painel Administrativo</h2>
     <hr>
 
     <div class="row">
+        <!-- Menu de Ações -->
         <div class="col-md-4">
-            <a href="{{ url_for('home') }}" class="btn btn-primary w-100 mb-3">📦 Frente de caixa</a>
-            <a href="{{ url_for('vendas') }}" class="btn btn-success w-100 mb-3">📊 Relatórios de Vendas</a>
-            <a href="{{ url_for('estoque') }}" class="btn btn-info w-100 mb-3">📦 Controle de Estoque</a>
-            <a href="{{ url_for('estoque') }}" class="btn btn-secondary w-100 mb-3">➕ Adicionar Produto</a>
-            <a href="{{ url_for('controle_caixa') }}" class="btn btn-dark w-100 mb-3">💰 Controle de Caixa</a>
-            <a href="{{ url_for('vendas_realizadas') }}" class="btn btn-dark w-100 mb-3">💰 vendas vendas Realizadas</a>        
+            <div class="d-grid gap-3">
+                <a href="{{ url_for('home') }}" class="btn btn-primary">📦 Frente de Caixa</a>
+                <a href="{{ url_for('vendas') }}" class="btn btn-success">📊 Vendas</a>
+                <a href="{{ url_for('estoque') }}" class="btn btn-info">📦 Controle de Estoque</a>
+                <a href="{{ url_for('controle_caixa') }}" class="btn btn-dark">💰 Controle de Caixa</a>
+                <a href="{{ url_for('vendas_realizadas') }}" class="btn btn-dark">📄 Vendas Realizadas</a>
+                <a href="{{ url_for('relatorio_vendas') }}" class="btn btn-dark">📄 Relatório de Vendas</a>
+                <a href="{{ url_for('listar_clientes') }}" class="btn btn-warning text-dark">📁 Ver Clientes</a>
+                <a href="{{ url_for('listar_usuarios') }}" class="btn btn-danger">👥 Usuários do Sistema</a>
+            </div>
         </div>
 
+        <!-- Resumo do Dia -->
         <div class="col-md-8">
-            <div class="alert alert-info">
-                <h4>📊 Resumo do Sistema</h4>
-                <p><strong>Total de Vendas Hoje:</strong> {{ pedidos_finalizados }}</p>
-                <p><strong>Faturamento Total:</strong> R$ {{ faturamento_total }}</p>
-                <p><strong>Vendas Canceladas:</strong> {{ pedidos_cancelados }}</p>
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-body bg-light">
+                    <h4 class="mb-3">📊 Resumo do Sistema</h4>
+                    <ul class="list-group">
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Total de Vendas Hoje:
+                            <span class="badge bg-success rounded-pill">{{ pedidos_finalizados }}</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Vendas Canceladas:
+                            <span class="badge bg-danger rounded-pill">{{ pedidos_cancelados }}</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Faturamento Total:
+                            <span class="badge bg-warning text-dark rounded-pill">R$ {{ faturamento_total }}</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Dashboard com Cards -->
+            <div class="row text-center">
+                <div class="col-md-3 mb-3">
+                    <div class="card bg-primary text-white shadow-sm">
+                        <div class="card-body">
+                            <h5>Total de Produtos</h5>
+                            <h3>{{ total_produtos }}</h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <div class="card bg-success text-white shadow-sm">
+                        <div class="card-body">
+                            <h5>Finalizados</h5>
+                            <h3>{{ pedidos_finalizados }}</h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <div class="card bg-danger text-white shadow-sm">
+                        <div class="card-body">
+                            <h5>Cancelados</h5>
+                            <h3>{{ pedidos_cancelados }}</h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <div class="card bg-warning text-dark shadow-sm">
+                        <div class="card-body">
+                            <h5>Faturamento</h5>
+                            <h3>R$ {{ faturamento_total }}</h3>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </div>
-
-<h2 class="text-center mt-4">📊 Dashboard Administrativo</h2>
-<div class="container">
-    
-    <!-- Estatísticas -->
-    <div class="row">
-        <div class="col-md-3">
-            <div class="card p-3 bg-primary text-white">
-                <h5>Total de Produtos</h5>
-                <p>{{ total_produtos }}</p>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="card p-3 bg-success text-white">
-                <h5>Pedidos Finalizados</h5>
-                <p>{{ pedidos_finalizados }}</p>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="card p-3 bg-danger text-white">
-                <h5>Pedidos Cancelados</h5>
-                <p>{{ pedidos_cancelados }}</p>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="card p-3 bg-warning text-dark">
-                <h5>Faturamento Total</h5>
-                <p>R$ {{ faturamento_total }}</p>
-            </div>
-        </div>
-    </div>
-
-
 {% endblock %}

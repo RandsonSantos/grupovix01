@@ -1,139 +1,137 @@
-// 🔹 Inicializando variáveis globais
+// 🔹 Variáveis globais
 let pedido = [];
 let total = 0;
 
-// 🔹 Pegando os produtos do HTML via JSON para uso no JavaScript
-let produtosDataElement = document.getElementById("produtos-data");
-let produtosDisponiveis = produtosDataElement ? JSON.parse(produtosDataElement.textContent) : [];
+// 🔹 Lista de produtos disponíveis
+const produtosDataElement = document.getElementById("produtos-data");
+const produtosDisponiveis = produtosDataElement ? JSON.parse(produtosDataElement.textContent) : [];
 
+// 🔹 Adiciona um item ao pedido
 function adicionarAoPedido(id, nome, preco, quantidade) {
-    quantidade = parseInt(quantidade);
+  quantidade = parseInt(quantidade);
 
-    if (isNaN(quantidade) || quantidade <= 0) {
-        alert("Quantidade inválida! Informe um número maior que 0.");
-        return;
-    }
+  if (isNaN(quantidade) || quantidade <= 0) {
+    return alert("Informe uma quantidade válida maior que zero.");
+  }
 
-    let estoqueElement = document.getElementById(`estoque_${id}`);
-    let estoqueAtual = parseInt(estoqueElement.textContent);
+  const estoqueElement = document.getElementById(`estoque_${id}`);
+  const estoqueAtual = parseInt(estoqueElement.textContent);
 
-    if (quantidade > estoqueAtual) {
-        alert("Erro: Estoque insuficiente!");
-        return;
-    }
+  if (quantidade > estoqueAtual) {
+    return alert("Estoque insuficiente para esse item.");
+  }
 
-    // Atualiza a quantidade no estoque na tela
-    estoqueElement.textContent = estoqueAtual - quantidade;
+  estoqueElement.textContent = estoqueAtual - quantidade;
 
-    // Criar um objeto de produto com quantidade
-    const item = { id, nome, preco, quantidade };
-
-    // Adicionar ao array de pedido
-    pedido.push(item);
-
-    // Atualizar a exibição da lista de pedidos
-    atualizarListaPedido();
+  pedido.push({ id, nome, preco, quantidade });
+  atualizarListaPedido();
 }
 
+// 🔁 Atualiza a lista de itens no carrinho
 function atualizarListaPedido() {
-    let listaPedido = document.getElementById("lista-pedido");
-    let totalElement = document.getElementById("total");
+  const lista = document.getElementById("lista-pedido");
+  const totalElement = document.getElementById("total");
+  lista.innerHTML = "";
 
-    // 🔹 Limpa a exibição anterior
-    listaPedido.innerHTML = "";
+  total = pedido.reduce((acc, item) => acc + item.preco * item.quantidade, 0);
+  totalElement.textContent = total.toFixed(2);
 
-    // 🔹 Calcula o total corretamente com quantidade
-    total = pedido.reduce((acc, item) => acc + (item.preco * item.quantidade), 0);
-    totalElement.textContent = total.toFixed(2);
+  pedido.forEach((item, i) => {
+    const li = document.createElement("li");
+    li.className = "list-group-item";
+    li.innerHTML = `${item.nome} (x${item.quantidade}) - R$ ${(item.preco * item.quantidade).toFixed(2)}
+      <button class="btn btn-danger btn-sm float-end" onclick="removerItem(${i})">❌</button>`;
+    lista.appendChild(li);
+  });
 
-    pedido.forEach((item, index) => {
-        let li = document.createElement("li");
-        li.className = "list-group-item";
-        li.innerHTML = `${item.nome} (x${item.quantidade}) - R$ ${(item.preco * item.quantidade).toFixed(2)}
-            <button class="btn btn-danger btn-sm float-end" onclick="removerItem(${index})">❌</button>`;
-        
-        listaPedido.appendChild(li);
-    });
-
-    // 🔹 Atualiza o input oculto para envio no formulário, convertendo a lista para JSON
-    document.getElementById("pedido-input").value = JSON.stringify(pedido);
+  document.getElementById("pedido-input").value = JSON.stringify(pedido);
 }
 
+// ❌ Remove item do pedido
 function removerItem(index) {
-    pedido.splice(index, 1);
-    atualizarListaPedido();
+  const itemRemovido = pedido.splice(index, 1)[0];
+  const estoqueElement = document.getElementById(`estoque_${itemRemovido.id}`);
+  if (estoqueElement) {
+    estoqueElement.textContent = parseInt(estoqueElement.textContent) + itemRemovido.quantidade;
+  }
+  atualizarListaPedido();
 }
 
+// ⌨️ Busca por nome com Enter
 function adicionarPorNome(event) {
-    if (event.key === "Enter") {
-        event.preventDefault();
+  if (event.key !== "Enter") return;
 
-        let input = document.getElementById("produto-input").value.toLowerCase().trim();
-        let produtoEncontrado = produtosDisponiveis.find(produto => produto.nome.toLowerCase().includes(input));
+  event.preventDefault();
+  const input = document.getElementById("produto-input");
+  const nomeBusca = input.value.trim().toLowerCase();
 
-        if (produtoEncontrado) {
-            adicionarAoPedido(produtoEncontrado.id, produtoEncontrado.nome, produtoEncontrado.preco, 1);
-            document.getElementById("produto-input").value = "";  // 🔹 Limpa o campo após adicionar
-            document.getElementById("produto-input").focus(); // 🔹 Retorna o foco
-        } else {
-            alert("Produto não encontrado!");
-        }
-    }
+  const produto = produtosDisponiveis.find(p => p.nome.toLowerCase().includes(nomeBusca));
+  if (!produto) return alert("Produto não encontrado.");
+
+  adicionarAoPedido(produto.id, produto.nome, produto.preco, 1);
+  input.value = "";
+  input.focus();
 }
 
-function selecionarPagamento(tipo, botao) {
-    document.getElementById("forma-pagamento").value = tipo;
+// 💳 Seleciona forma de pagamento
+function selecionarPagamento(metodo, btnSelecionado) {
+  document.getElementById("forma-pagamento").value = metodo;
 
-    // 🔹 Destacar o botão selecionado
-    document.querySelectorAll(".btn-group button").forEach(btn => btn.classList.remove("active"));
-    botao.classList.add("active");
+  const botoes = document.querySelectorAll(".btn-group button");
+  botoes.forEach(btn => btn.classList.remove("active"));
+  btnSelecionado.classList.add("active");
 
-    // 🔹 Esconder aviso de erro
-    document.getElementById("erro-pagamento").style.display = "none";
+  document.getElementById("cliente_id").required = (metodo === "Fiado");
 }
 
+// ✅ Validação final antes de enviar
 function validarPagamento() {
-    let formaPagamento = document.getElementById("forma-pagamento").value;
+  const forma = document.getElementById("forma-pagamento").value;
+  const pedidoJSON = document.getElementById("pedido-input").value;
 
-    if (!formaPagamento) {
-        document.getElementById("erro-pagamento").style.display = "block";
-        return false; // 🔹 Impede envio do formulário
-    }
+  if (!forma) {
+    document.getElementById("erro-pagamento").style.display = "block";
+    return false;
+  }
 
-    return true;
+  if (!pedidoJSON || pedido.length === 0) {
+    alert("Adicione ao menos um produto ao pedido.");
+    return false;
+  }
+
+  return true;
 }
 
+// 🔍 Filtro de produtos na tabela
 function filtrarProdutos() {
-    let input = document.getElementById("produto-input").value.toLowerCase();
-    let tabela = document.getElementById("tabela-produtos");
-    let produtos = document.querySelectorAll(".produto-item");
+  const termo = document.getElementById("produto-input").value.toLowerCase();
+  const tabela = document.getElementById("tabela-produtos");
+  const produtos = document.querySelectorAll(".produto-item");
 
-    tabela.style.display = input.length > 0 ? "block" : "none";
+  tabela.style.display = termo.length ? "block" : "none";
 
-    produtos.forEach(produto => {
-        let nomeProdutoCell = produto.getElementsByTagName("td")[0];
-        if (nomeProdutoCell) {
-            let nomeProduto = nomeProdutoCell.textContent.toLowerCase();
-            produto.style.display = nomeProduto.includes(input) ? "" : "none";
-        }
-    });
+  produtos.forEach(produto => {
+    const nome = produto.querySelector("td").textContent.toLowerCase();
+    produto.style.display = nome.includes(termo) ? "" : "none";
+  });
 }
 
+// 🗑️ Cancela uma venda específica (requisição POST)
 function cancelarVenda(id) {
-    if (confirm("Tem certeza que deseja cancelar esta venda?")) {
-        fetch(`/cancelar_venda/${id}`, { method: "PUT" })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    alert("Venda cancelada com sucesso!");
-                    window.location.reload(); // 🔹 Atualiza a página
-                } else {
-                    alert("Erro ao cancelar a venda: " + data.message);
-                }
-            })
-            .catch(error => {
-                alert("Ocorreu um erro no cancelamento. Verifique o console.");
-                console.error("Erro:", error);
-            });
-    }
+  if (confirm("❌ Deseja realmente cancelar esta venda?")) {
+    fetch(`/cancelar_venda/${id}`, {
+      method: "POST"
+    })
+    .then(response => response.json())
+    .then(data => {
+      alert(data.message);
+      if (data.success) {
+        location.reload();
+      }
+    })
+    .catch((error) => {
+      alert("Erro ao comunicar com o servidor.");
+      console.error("Erro:", error);
+    });
+  }
 }

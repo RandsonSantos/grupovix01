@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+{% block title %}Relatório de Vendas{% endblock %}
+{% block content %}
+<div class="container mt-4">
+  <h2 class="text-center mb-4">📊 Relatório de Vendas</h2>
+
+  <!-- 🗓️ Filtro por data -->
+  <form method="POST" class="row g-3 mb-4">
+    <div class="col-md-5">
+      <label for="data_inicio"><strong>Data Início:</strong></label>
+      <input type="date" name="data_inicio" id="data_inicio" class="form-control"
+             value="{{ data_inicio.strftime('%Y-%m-%d') }}">
+    </div>
+    <div class="col-md-5">
+      <label for="data_fim"><strong>Data Fim:</strong></label>
+      <input type="date" name="data_fim" id="data_fim" class="form-control"
+             value="{{ data_fim.strftime('%Y-%m-%d') }}">
+    </div>
+    <div class="col-md-2 align-self-end">
+      <button type="submit" class="btn btn-primary w-100">🔍 Filtrar</button>
+    </div>
+  </form>
+
+  <!-- 📊 Ações -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <a href="{{ url_for('vendas_realizadas') }}" class="btn btn-outline-dark">
+      ↩️ Voltar para Vendas
+    </a>
+    <button class="btn btn-secondary" onclick="window.print()">
+      🖨️ Imprimir Relatório
+    </button>
+  </div>
+
+  <!-- 🔢 Resumo financeiro -->
+  <div class="row mb-4">
+    {% for chave, valor in resumo.items() %}
+    <div class="col-md-4 mb-2">
+      <div class="card {% if chave == 'Total geral' %}border-success{% elif chave == 'Fiado' %}border-warning{% elif chave == 'Cancelado' %}border-danger{% else %}border-info{% endif %}">
+        <div class="card-body text-center">
+          <h5 class="card-title">
+            {% if chave == 'Dinheiro' %}💵 Dinheiro
+            {% elif chave == 'Cartão' %}💳 Cartão
+            {% elif chave == 'PIX' %}⚡ PIX
+            {% elif chave == 'Fiado' %}🧾 Fiado
+            {% elif chave == 'Cancelado' %}❌ Cancelado
+            {% elif chave == 'Total geral' %}🏆 Total Geral
+            {% else %}{{ chave }}
+            {% endif %}
+          </h5>
+          <p class="card-text fs-5"><strong>R$ {{ '%.2f' % valor }}</strong></p>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  
+  <!-- 📋 Tabela de pedidos -->
+  <div class="table-responsive">
+    <table class="table table-bordered table-hover align-middle">
+      <thead class="table-dark">
+        <tr>
+          <th>ID</th>
+          <th>Total</th>
+          <th>Forma de Pagamento</th>
+          <th>Status</th>
+          <th>Fiado</th>
+          <th>Data</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for pedido in pedidos %}
+        <tr>
+          <td>{{ pedido.id }}</td>
+          <td>R$ {{ '%.2f' % pedido.total }}</td>
+          <td>{{ pedido.forma_pagamento or '❌' }}</td>
+          <td>{{ pedido.status }}</td>
+          <td>{{ 'Sim' if pedido.fiado else 'Não' }}</td>
+          <td>{{ pedido.data.strftime('%d/%m/%Y') }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

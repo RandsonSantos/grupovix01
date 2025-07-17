@@ -164,3 +164,23 @@ body {
     }
     .no-print { display: none; } /* Esconde botões ao imprimir */
 }
+/* Centraliza os botões na página */
+.lojas-container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding-top: 40px;
+}
+
+/* Estilo para os botões das lojas */
+.btn-loja {
+    font-size: 1.1rem;
+    padding: 12px;
+    margin-bottom: 15px;
+    transition: 0.3s ease-in-out;
+}
+
+/* Efeito hover */
+.btn-loja:hover {
+    transform: scale(1.03);
+    opacity: 0.9;
+}
